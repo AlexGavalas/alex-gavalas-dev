@@ -1,0 +1,83 @@
+---
+interface Props {
+  projects: { name: string; href: string; previewEmbeddable: boolean }[];
+}
+const { projects } = Astro.props;
+---
+
+<details class="website-preview">
+  <summary>
+    <span class="preview-label"><span aria-hidden="true">▣</span> Live project preview</span>
+    <span class="preview-toggle" aria-hidden="true"></span>
+  </summary>
+  {projects.map(({ name, href, previewEmbeddable: embeddable }) => (
+  <section data-project-preview aria-label={`${name} preview`}>
+  <div class="preview-toolbar">
+    <p>{embeddable ? 'Live website · scroll and explore inside the frame' : 'Embedded preview unavailable'}</p>
+    <a href={href} target="_blank" rel="noopener noreferrer">Open {name} <span aria-hidden="true">↗</span></a>
+  </div>
+  {embeddable ? (
+    <>
+      <iframe
+        src={href}
+        title={`${name} live website preview`}
+        loading="lazy"
+        referrerpolicy="no-referrer"
+        sandbox="allow-scripts allow-same-origin allow-forms allow-popups allow-popups-to-escape-sandbox"
+      ></iframe>
+      <p class="preview-note">If the preview doesn’t appear or a feature is restricted, use the link above to open the full website.</p>
+    </>
+  ) : (
+    <div class="preview-unavailable">
+      <span class="unavailable-icon" aria-hidden="true">↗</span>
+      <h4>{name} has its own front door.</h4>
+      <p>This site currently blocks iframe embedding. You can explore it in a new tab instead.</p>
+      <a href={href} target="_blank" rel="noopener noreferrer">Explore {name} <span aria-hidden="true">↗</span></a>
+    </div>
+  )}
+  </section>
+  ))}
+</details>
+
+<style>
+  .website-preview { border-top: 1px solid var(--border-soft); }
+  [data-project-preview][hidden] { display: none; }
+  summary { display: flex; align-items: center; gap: 12px; padding: 18px 21px; cursor: pointer; list-style: none; font-size: 13px; font-weight: 500; }
+  summary::-webkit-details-marker { display: none; }
+  .preview-label { display: flex; gap: 9px; align-items: center; }
+  .preview-label > span { color: var(--accent); font-size: 15px; }
+  .preview-toggle { width: 14px; margin-left: auto; text-align: center; color: var(--accent); }
+  .preview-toggle::before { content: '+'; font-size: 17px; }
+  details[open] .preview-toggle::before { content: '−'; }
+  summary:focus-visible { outline: 2px solid var(--accent); outline-offset: -4px; }
+  a:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; transition: none; }
+  .preview-toolbar { border-top: 1px solid var(--border-soft); border-bottom: 1px solid var(--border-soft); background: var(--surface-soft); padding: 12px 21px; display: flex; align-items: center; justify-content: space-between; gap: 16px; font-size: 10px; }
+  .preview-toolbar p { margin: 0; color: var(--muted); line-height: 1.6; }
+  a { color: var(--accent); text-decoration: none; }
+  .preview-toolbar a { display: inline-flex; align-items: center; justify-content: center; white-space: nowrap; min-height: 42px; padding: 9px 14px; background: var(--ink); border: 1px solid var(--ink); color: var(--surface); border-radius: 7px; font-size: 12px; font-weight: 500; box-shadow: 0 1px 2px #243e3608; transition: transform 140ms cubic-bezier(.23, 1, .32, 1); }
+  .preview-toolbar a:active { transform: scale(.97); }
+  a > span { margin-left: 5px; }
+  iframe { display: block; width: 100%; height: 580px; border: 0; background: var(--surface); }
+  .preview-note { font-size: 10px; line-height: 1.7; color: var(--muted); border-top: 1px solid var(--border-soft); margin: 0; padding: 12px 21px; }
+  .preview-unavailable { padding: 38px 24px; text-align: center; background: var(--surface-soft); }
+  .unavailable-icon { display: grid; place-items: center; margin: 0 auto 15px; width: 38px; height: 38px; background: var(--rose-soft); color: var(--ink); border-radius: 10px; font-size: 22px; }
+  h4 { font-size: 16px; font-weight: 500; letter-spacing: -.3px; margin: 0 0 10px; }
+  .preview-unavailable p { font-size: 12px; line-height: 1.8; color: var(--muted); max-width: 370px; margin: 0 auto 20px; }
+  .preview-unavailable a { display: inline-block; border: 1px solid var(--border); background: var(--surface); border-radius: 6px; padding: 10px 13px; font-size: 11px; color: var(--accent); }
+  @media (hover: hover) and (pointer: fine) {
+    summary:hover { background: var(--surface-soft); }
+    a:hover { text-decoration: underline; text-underline-offset: 3px; }
+    .preview-toolbar a:hover { background: var(--accent); text-decoration: none; }
+  }
+  @media (max-width: 600px) {
+    summary { padding: 16px; gap: 9px; font-size: 12px; }
+    .preview-toolbar { padding: 12px 16px; flex-wrap: wrap; gap: 8px; }
+    iframe { height: 480px; }
+    .preview-note { padding: 12px 16px; }
+    .preview-unavailable { padding: 30px 20px; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .preview-toolbar a { transition: none; }
+    .preview-toolbar a:active { transform: none; }
+  }
+</style>

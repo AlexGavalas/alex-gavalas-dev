@@ -1,0 +1,15 @@
+:root {
+  --page: #f2f5ef;
+  --surface: #fdfef9;
+  --surface-soft: #eaf0e5;
+  --surface-hover: #e3ebdc;
+  --ink: #243e36;
+  --muted: #5d6e65;
+  --accent: #356b55;
+  --border: #ced9cb;
+  --border-soft: #dfe6d9;
+  --citron: #d5de7a;
+  --citron-soft: #eff2d5;
+  --rose: #dda8b5;
+  --rose-soft: #f5e6ea;
+}

@@ -1,0 +1,8 @@
+/* One self-hosted variable file; the interface uses only 400, 500, and 600. */
+@font-face {
+  font-family: 'Source Sans 3 Variable';
+  font-style: normal;
+  font-weight: 200 900;
+  font-display: swap;
+  src: url('@fontsource-variable/source-sans-3/files/source-sans-3-latin-wght-normal.woff2') format('woff2');
+}

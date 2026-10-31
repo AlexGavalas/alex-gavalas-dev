@@ -1,0 +1,167 @@
+---
+interface Props {
+  compact?: boolean;
+  id?: string;
+}
+const { compact = false, id = 'project-object' } = Astro.props;
+---
+
+<div class:list={['object-exhibit', { compact }]} data-project-exhibit>
+  {!compact && <div class="exhibit-heading"><span>PERSONAL WORK / A TWO-SIDED OBJECT</span><span>NO. 001</span></div>}
+  <div class="stage" data-object-stage data-facing="front" role="group" aria-label="Interactive 3D project object" aria-describedby={`${id}-help`}>
+    <div class="floor" aria-hidden="true"></div>
+    <div class="object-shadow" aria-hidden="true"></div>
+    <div class="project-object" data-project-object aria-hidden="true">
+      <div class="face front">
+        <div class="screw screw-tl"></div><div class="screw screw-tr"></div><div class="screw screw-bl"></div><div class="screw screw-br"></div>
+        <div class="face-topline"><span>PERSONAL PROJECT</span><span>01 / HT</span></div>
+        <div class="face-emblem">ht<span>01</span></div>
+        <div class="rhythm"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div>
+        <div class="face-label"><strong>HabitThread</strong><span>MEALS. MOVEMENT. PROGRESS.</span></div>
+        <div class="face-bottomline"><span>SMALL STEPS / REAL PROGRESS</span><span>↗</span></div>
+      </div>
+      <div class="face back">
+        <div class="screw screw-tl"></div><div class="screw screw-tr"></div><div class="screw screw-bl"></div><div class="screw screw-br"></div>
+        <div class="face-topline"><span>PERSONAL PROJECT</span><span>02 / LP</span></div>
+        <div class="face-emblem">lp<span>02</span></div>
+        <div class="note-lines"><span></span><span></span><span></span></div>
+        <div class="face-label"><strong>Learning Path</strong><span>NOTES. RESOURCES. DETOURS.</span></div>
+        <div class="face-bottomline"><span>FOLLOW AN INTERESTING THREAD</span><span>↗</span></div>
+      </div>
+      <div class="edge edge-right"><span>ALEX GAVALAS / SELECTED WORK</span></div>
+      <div class="edge edge-left"></div><div class="edge edge-top"></div><div class="edge edge-bottom"></div>
+    </div>
+    <span class="stage-corner corner-tl" aria-hidden="true"></span><span class="stage-corner corner-br" aria-hidden="true"></span>
+  </div>
+  <div class="object-controls" data-object-controls hidden>
+    <div class="rotation-buttons"><button type="button" data-action="left" aria-label="Rotate object left">↶</button><button type="button" data-action="flip">Turn over <span aria-hidden="true">↔</span></button><button type="button" data-action="right" aria-label="Rotate object right">↷</button></div>
+    <button type="button" data-action="reset" class="reset">Reset view</button>
+  </div>
+  <p class="object-help" id={`${id}-help`} data-object-help>A two-sided project object. Both projects are described alongside it.</p>
+  <p class="sr-only" data-object-status role="status"></p>
+</div>
+
+<script>
+  import { initProjectObject } from '../scripts/project-object';
+  document.querySelectorAll<HTMLElement>('[data-project-exhibit]').forEach(initProjectObject);
+</script>
+
+<style>
+  .object-exhibit { min-width: 0; }
+  .exhibit-heading { display: flex; justify-content: space-between; gap: 20px; font-size: 8px; letter-spacing: .8px; color: var(--muted); padding: 12px 0 0; }
+  .stage { height: 500px; position: relative; display: grid; place-items: center; perspective: 1200px; user-select: none; -webkit-user-select: none; touch-action: pan-y; --tile-w: 310px; --tile-h: 380px; --depth: 36px; }
+  .stage[data-interactive='true'] { cursor: grab; }
+  .stage[data-dragging='true'] { cursor: grabbing; }
+  .stage:focus-visible, button:focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; }
+  .project-object { width: var(--tile-w); height: var(--tile-h); position: relative; transform-style: preserve-3d; transform: rotateX(-12deg) rotateY(-24deg) rotateZ(-7deg); pointer-events: none; }
+  .face, .edge { position: absolute; backface-visibility: hidden; }
+  .face { inset: 0; padding: 26px; border: 1px solid #88964e; box-shadow: inset 0 0 0 5px #edf2bb40, inset 0 1px 2px #f8fbdc; background: linear-gradient(125deg, #e6ebaa 0%, var(--citron) 40%, #b4c15f 100%); color: var(--ink); display: flex; flex-direction: column; }
+  .front { transform: translateZ(calc(var(--depth) / 2)); }
+  .back { transform: rotateY(180deg) translateZ(calc(var(--depth) / 2)); background: linear-gradient(135deg, #edc6cf, var(--rose) 50%, #c18c9b); border-color: #aa7282; box-shadow: inset 0 0 0 5px #f5e0e640, inset 0 1px 2px #fff0f3; color: var(--ink); }
+  .edge { background: repeating-linear-gradient(0deg, #344b40 0 1px, #4c6152 1px 3px); border: 1px solid var(--ink); }
+  .edge-right, .edge-left { height: var(--tile-h); width: var(--depth); left: calc((var(--tile-w) - var(--depth)) / 2); top: 0; }
+  .edge-right { transform: rotateY(90deg) translateZ(calc(var(--tile-w) / 2)); }
+  .edge-left { transform: rotateY(-90deg) translateZ(calc(var(--tile-w) / 2)); }
+  .edge-top, .edge-bottom { width: var(--tile-w); height: var(--depth); left: 0; top: calc((var(--tile-h) - var(--depth)) / 2); }
+  .edge-top { transform: rotateX(90deg) translateZ(calc(var(--tile-h) / 2)); background: linear-gradient(#95a38a, #566d58); }
+  .edge-bottom { transform: rotateX(-90deg) translateZ(calc(var(--tile-h) / 2)); }
+  .edge-right > span { position: absolute; left: 11px; top: 75px; writing-mode: vertical-rl; font-size: 7px; letter-spacing: 1.5px; color: var(--citron); }
+  .face-topline, .face-bottomline { display: flex; justify-content: space-between; gap: 10px; font-size: 6px; letter-spacing: 1px; }
+  .face-emblem { font-size: 118px; line-height: 1; font-weight: 600; letter-spacing: -12px; margin: 22px 0 6px; text-shadow: 0 1px 1px #f8fbdc99, 0 -1px 1px #243e3655; }
+  .face-emblem > span { font-size: 13px; letter-spacing: 0; display: inline-block; vertical-align: top; margin: 11px 0 0 12px; font-weight: 400; }
+  .back .face-emblem { text-shadow: 0 1px 1px #fff0f399, 0 -1px 1px #243e3655; }
+  .rhythm { height: 26px; display: flex; align-items: end; gap: 6px; margin: 3px 0 22px; }
+  .rhythm > span { width: 29px; height: 14px; border: 1px solid #243e3680; border-radius: 12px 12px 0 0; background: #356b5520; }
+  .rhythm > span:nth-child(2n) { height: 24px; }
+  .rhythm > span:nth-child(3n) { height: 19px; }
+  .face-label strong { font-size: 25px; font-weight: 500; letter-spacing: -1.3px; }
+  .face-label > span { display: block; font-size: 6px; letter-spacing: .9px; margin-top: 9px; }
+  .face-bottomline { border-top: 1px solid #243e3650; padding-top: 14px; margin-top: auto; font-size: 5px; }
+  .face-bottomline > span:last-child { font-size: 18px; line-height: 1; margin-top: -4px; }
+  .note-lines { display: flex; flex-direction: column; gap: 7px; margin: 8px 0 28px; }
+  .note-lines > span { display: block; height: 1px; background: #243e3660; width: 100%; }
+  .note-lines > span:nth-child(2) { width: 80%; }
+  .note-lines > span:nth-child(3) { width: 55%; }
+  .screw { position: absolute; width: 6px; height: 6px; background: linear-gradient(135deg, #4c6152, #d8dfc4 44%, #435c4b 48% 55%, #bcc9a8 59%, #4c6152); border-radius: 50%; box-shadow: 0 1px 1px #f8fbdc55; }
+  .screw-tl { top: 10px; left: 10px; }
+  .screw-tr { top: 10px; right: 10px; }
+  .screw-bl { bottom: 10px; left: 10px; }
+  .screw-br { bottom: 10px; right: 10px; }
+  .floor { position: absolute; width: 85%; height: 260px; bottom: -40px; background: linear-gradient(#356b5530 1px, transparent 1px), linear-gradient(90deg, #356b5530 1px, transparent 1px); background-size: 35px 35px; transform: rotateX(72deg); mask-image: radial-gradient(ellipse, #000 10%, transparent 70%); pointer-events: none; }
+  .object-shadow { position: absolute; width: 280px; height: 75px; background: radial-gradient(ellipse, #243e3633, #243e3612 35%, transparent 70%); bottom: 15px; transform: rotate(-9deg); pointer-events: none; }
+  .stage-corner { position: absolute; width: 12px; height: 12px; opacity: .6; pointer-events: none; }
+  .corner-tl { top: 31px; left: 20px; border-top: 1px solid var(--border); border-left: 1px solid var(--border); }
+  .corner-br { bottom: 20px; right: 20px; border-bottom: 1px solid var(--border); border-right: 1px solid var(--border); }
+  .object-controls { display: flex; justify-content: center; align-items: center; gap: 19px; margin-top: 4px; }
+  .rotation-buttons { display: flex; border-radius: 8px; background: var(--surface); border: 1px solid var(--border); box-shadow: 0 2px 3px #243e3605; padding: 3px; }
+  button { font: inherit; color: inherit; cursor: pointer; background: none; border: 0; font-size: 10px; min-height: 34px; border-radius: 5px; padding: 8px 13px; transition: transform 130ms cubic-bezier(.23, 1, .32, 1); }
+  .rotation-buttons button:first-child, .rotation-buttons button:last-child { font-size: 19px; line-height: 1; padding: 5px 10px; }
+  .rotation-buttons button > span { font-size: 16px; margin-left: 11px; vertical-align: -1px; }
+  button:active { transform: scale(.97); }
+  button:focus-visible { transition: none; }
+  .reset { color: var(--muted); font-size: 9px; padding: 8px 3px; }
+  .object-help { text-align: center; font-size: 8px; color: var(--muted); margin: 13px 0 0; }
+  .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; border: 0; }
+  [hidden] { display: none !important; }
+  .compact { padding: 6px 15px 19px; background: var(--surface-soft); }
+  .compact .stage { height: 335px; --tile-w: 218px; --tile-h: 268px; --depth: 27px; }
+  .compact .face { padding: 20px; }
+  .compact .face-emblem { font-size: 80px; margin: 16px 0 3px; letter-spacing: -8px; }
+  .compact .face-emblem > span { font-size: 9px; margin-left: 9px; }
+  .compact .face-topline { font-size: 4px; letter-spacing: .7px; }
+  .compact .face-label strong { font-size: 19px; letter-spacing: -.8px; }
+  .compact .face-label > span { font-size: 4px; margin-top: 6px; letter-spacing: .6px; }
+  .compact .face-bottomline { font-size: 3.5px; letter-spacing: .6px; padding-top: 10px; }
+  .compact .face-bottomline > span:last-child { font-size: 13px; }
+  .compact .rhythm { height: 19px; gap: 4px; margin: 0 0 13px; }
+  .compact .rhythm > span { height: 10px; }
+  .compact .rhythm > span:nth-child(2n) { height: 18px; }
+  .compact .rhythm > span:nth-child(3n) { height: 14px; }
+  .compact .note-lines { margin: 8px 0 19px; gap: 5px; }
+  .compact .object-shadow { width: 230px; height: 50px; bottom: 3px; }
+  .compact .floor { bottom: -65px; }
+  .compact .stage-corner { display: none; }
+  .compact .object-controls { gap: 13px; }
+  .compact .object-help { font-size: 7px; margin-top: 11px; }
+  @media (hover: hover) and (pointer: fine) { .rotation-buttons button:hover { background: var(--surface-hover); } }
+  @media (max-width: 1050px) {
+    .object-exhibit:not(.compact) .stage { --tile-w: 260px; --tile-h: 340px; height: 470px; }
+    .object-exhibit:not(.compact) .face { padding: 23px; }
+    .object-exhibit:not(.compact) .face-emblem { font-size: 105px; margin-top: 20px; }
+    .object-exhibit:not(.compact) .rhythm { margin-bottom: 14px; }
+    .object-exhibit:not(.compact) .face-label strong { font-size: 21px; }
+    .object-exhibit:not(.compact) .face-topline { font-size: 5px; }
+    .object-exhibit:not(.compact) .face-bottomline { font-size: 4px; }
+    .object-exhibit:not(.compact) .face-label > span { font-size: 5px; }
+    .exhibit-heading { font-size: 6px; }
+  }
+  @media (max-width: 700px) {
+    .object-exhibit:not(.compact) { border-top: 1px solid var(--border); padding-top: 7px; }
+    .object-exhibit:not(.compact) .stage { height: 450px; --tile-w: 250px; --tile-h: 320px; --depth: 30px; }
+    .object-exhibit:not(.compact) .face-emblem { font-size: 99px; margin-top: 16px; }
+    .object-exhibit:not(.compact) .face-bottomline { padding-top: 10px; }
+    .object-exhibit:not(.compact) .face-label > span { margin-top: 7px; }
+    .object-exhibit:not(.compact) .rhythm { margin-bottom: 10px; height: 22px; }
+    .object-exhibit:not(.compact) .face-bottomline > span:last-child { font-size: 14px; }
+    .object-exhibit:not(.compact) .note-lines { margin-bottom: 22px; }
+    .object-exhibit:not(.compact) .object-shadow { width: 250px; bottom: 27px; }
+    .corner-tl { left: 0; }
+    .corner-br { right: 0; }
+  }
+  @media (max-width: 400px) {
+    .object-exhibit:not(.compact) .stage { --tile-w: 220px; --tile-h: 300px; height: 410px; }
+    .object-exhibit:not(.compact) .face { padding: 22px; }
+    .object-exhibit:not(.compact) .face-emblem { font-size: 89px; margin-top: 17px; }
+    .object-exhibit:not(.compact) .face-topline { font-size: 4px; }
+    .object-exhibit:not(.compact) .face-label strong { font-size: 19px; }
+    .object-exhibit:not(.compact) .face-bottomline { font-size: 3.5px; letter-spacing: .7px; }
+    .object-exhibit:not(.compact) .face-label > span { font-size: 4px; }
+    .object-controls { gap: 10px; }
+    button { padding: 8px 10px; }
+    .object-help { font-size: 7px; }
+    .compact { padding-left: 8px; padding-right: 8px; }
+    .compact .stage { --tile-w: 200px; --tile-h: 255px; height: 320px; }
+    .compact .face-emblem { font-size: 73px; }
+  }
+  @media (prefers-reduced-motion: reduce) { button { transition: none; } button:active { transform: none; } }
+</style>
