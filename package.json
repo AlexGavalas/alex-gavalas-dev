@@ -7,7 +7,9 @@
     "dev": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
-    "check": "astro check"
+    "check": "astro check",
+    "preview:cloudflare": "npm run build && wrangler pages dev",
+    "deploy": "npm run build && wrangler pages deploy"
   },
   "dependencies": {
     "@fontsource-variable/source-sans-3": "5.3.1",
@@ -15,7 +17,8 @@
   },
   "devDependencies": {
     "@astrojs/check": "0.9.12",
-    "typescript": "6.0.2"
+    "typescript": "6.0.2",
+    "wrangler": "4.156.2"
   },
   "allowScripts": {
     "fsevents": false

@@ -91,6 +91,13 @@ secondary buttons so opening the full sites remains easy to discover.
 
 ## Cloudflare Pages
 
+The site stays fully static; no Cloudflare adapter or runtime bindings are needed.
+`wrangler.jsonc` configures the Pages project name (`alex-gavalas-dev`), build
+output, and compatibility date. If your existing Pages project has a different
+name, update `name` before deploying.
+
+### Git deployments
+
 Connect the Git repository in Cloudflare Pages:
 
 - Framework preset: **Astro**
@@ -98,6 +105,33 @@ Connect the Git repository in Cloudflare Pages:
 - Output directory: `dist`
 - Environment variable: `NODE_VERSION=24`
 
-No Cloudflare adapter is needed for this static site. Deployment has not been
-configured by the application itself. Once the final domain is known, set `site`
-in `astro.config.mjs` and add a canonical URL and sitemap.
+### Local Cloudflare preview
+
+```sh
+npm run preview:cloudflare
+```
+
+This builds the site and serves `dist` through Wrangler's local Pages runtime.
+Use `npm run dev` for Astro's live-reloading development server instead.
+
+### Manual deployment
+
+Authenticate with Cloudflare, then deploy:
+
+```sh
+npx wrangler login
+npm run deploy
+```
+
+For a new Direct Upload project, first run
+`npx wrangler pages project create alex-gavalas-dev` and select the production
+branch. For an existing project, confirm its name and production branch in the
+Cloudflare dashboard. Wrangler infers the deployment branch from Git; pass an
+explicit branch with `npm run deploy -- --branch <branch-name>` if needed.
+
+For CI, supply `CLOUDFLARE_API_TOKEN` and `CLOUDFLARE_ACCOUNT_ID` through the CI
+secret store, never committed files. Local Wrangler state and `.dev.vars` files
+are ignored by Git. No remote project has been created or deployed by this setup.
+
+Once the final domain is known, set `site` in `astro.config.mjs` and add a canonical
+URL and sitemap.
